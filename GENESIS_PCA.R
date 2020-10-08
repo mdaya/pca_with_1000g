@@ -1,12 +1,13 @@
 #Set parameters
-bed.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.bed"
-bim.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.bim"
-fam.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.fam"
-gds.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.gds"
-pcvec.out.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.pcvec"
-eigenval.out.fn <- "FHS_ADRN_MEGA_EA_merged_clean_ADRN_OMNI_ADIGE_merged_clean.eigenval"
-slide.max.bp=10e6
-r2.ld.threshold=0.1
+args <- commandArgs(trailingOnly = TRUE)
+bed.fn <- args[1]
+bim.fn <- args[2]
+fam.fn <- args[3]
+gds.fn <- args[4]
+pcvec.out.fn <- args[5]
+eigenval.out.fn <- args[6]
+slide.max.bp <- args[7]
+r2.ld.threshold <- args[8]
 
 #Load librariess
 library(SNPRelate)
