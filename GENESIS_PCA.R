@@ -6,8 +6,8 @@ fam.fn <- args[3]
 gds.fn <- args[4]
 pcvec.out.fn <- args[5]
 eigenval.out.fn <- args[6]
-slide.max.bp <- args[7]
-r2.ld.threshold <- args[8]
+slide.max.bp <- as.numeric(args[7])
+r2.ld.threshold <- as.numeric(args[8])
 
 #Load librariess
 library(SNPRelate)
