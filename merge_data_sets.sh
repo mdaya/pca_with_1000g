@@ -2,6 +2,8 @@
 
 study1_plink_bed_file=$1
 study2_plink_bed_file=$2
+min_maf=$3
+min_geno=$4
 study1_plink_in_prefix=`echo $study1_plink_bed_file | sed 's/.bed//' | sed 's/.BED//'` 
 study2_plink_in_prefix=`echo $study2_plink_bed_file | sed 's/.bed//' | sed 's/.BED//'` 
 study1_plink_prefix=`basename $study1_plink_in_prefix` 
@@ -55,9 +57,9 @@ else
       --make-bed --out ${study1_plink_prefix}_${study2_plink_prefix}_merged3
 fi
 
-#Remove SNPs with large missingness
+#Remove SNPs with large missingness and apply MAF filtere
 plink --bfile ${study1_plink_prefix}_${study2_plink_prefix}_merged3 \
-   --geno 0.01 \
+   --geno $min_geno --maf $min_maf \
    --make-bed --out ${study1_plink_prefix}_${study2_plink_prefix}_merged_clean
 
 
