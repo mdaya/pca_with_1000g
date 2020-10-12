@@ -4,8 +4,8 @@ bed.fn <- args[1]
 bim.fn <- args[2]
 fam.fn <- args[3]
 gds.fn <- args[4]
-pcvec.out.fn <- args[5]
-eigenval.out.fn <- args[6]
+rdata.out.fn <- args[5]
+log.fn <- args[6]
 slide.max.bp <- as.numeric(args[7])
 r2.ld.threshold <- as.numeric(args[8])
 
@@ -13,6 +13,9 @@ r2.ld.threshold <- as.numeric(args[8])
 library(SNPRelate)
 library(GWASTools)
 library(GENESIS)
+
+#Open the log file
+sink(log.fn)
 
 #Convert PLINK files to GDS files
 snpgdsBED2GDS(bed.fn = bed.fn, 
@@ -28,6 +31,7 @@ gds <- snpgdsOpen(gds.fn)
 snpset <- snpgdsLDpruning(gds, method="corr", slide.max.bp=slide.max.bp, 
                           ld.threshold=sqrt(r2.ld.threshold), verbose=FALSE)
 pruned <- unlist(snpset, use.names=FALSE)
+print(paste0("Number of SNPs after LD pruning: ", length(pruned)))
 
 #Get KING relatedness estimates
 ibd <- snpgdsIBDKING(gds, snp.id=pruned)
@@ -40,18 +44,14 @@ snpgdsClose(gds)
 #Run PC-AiR
 geno <- GdsGenotypeReader(filename=gds.fn)
 geno.data <- GenotypeData(geno)
-pcair.results <- pcair(geno.data, 
+pca <- pcair(geno.data, 
                        kinobj=ibd$kinship,
                        divobj=ibd$kinship,
                        snp.include=pruned)
 
 #Write PC-AiR output
-pc.frame <- as.data.frame(pcair.results$vector)
-colnames(pc.frame) <- paste0("PC", 1:ncol(pc.frame))
-pc.frame$SampleID <- rownames(pc.frame)
-pc.frame <- pc.frame[,c(ncol(pc.frame), 1:(ncol(pc.frame)-1))]
-write.table(pc.frame, pcvec.out.fn,  sep="\t", quote=F, row.names=F, col.names=T)
-write.table(pcair.results$values, eigenval.out.fn,  sep="\t", quote=F, row.names=F, col.names=F)
+save(pca, file=rdata.out.fn)
 
-#Close the GDS file
+#Close the GDS file and log file
 close(geno.data)
+sink()
